@@ -1,0 +1,100 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: system
+      folder: CPU Usage
+      interval: 1m
+      rules:
+        - uid: a76a21dc-034b-4558-ace7-557d0c48eab3
+          title: alert1
+          condition: B
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: e6001418-a01d-4ca8-bc2b-a7330adee6ca
+              model:
+                datasource:
+                    type: prometheus
+                    uid: e6001418-a01d-4ca8-bc2b-a7330adee6ca
+                editorMode: code
+                exemplar: false
+                expr: sum by (cpu) (rate(node_cpu_seconds_total{mode!="idle"}[1m]))
+                hide: false
+                instant: false
+                interval: ""
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: true
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: last
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: $B  > 0.005
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: math
+          noDataState: Alerting
+          execErrState: Error
+          for: 5m
+          annotations:
+            summary: CPU to igh
+          labels:
+            team: operation
+            type: cpu
+          isPaused: false
